@@ -1,0 +1,28 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+<div class="d-flex flex-column" style="gap: 30px;">
+    <h3 class="fw-bold fs-5">Hi {{ name }}, good to see you again.</h3>
+
+    <div class="">
+        <a href="/chat" class="primary-btn" style="padding: 16px 30px;">Start New Assessmen</a>
+    </div>
+
+    <div>
+        <table class="table table-hover ">
+            <tr>
+                <th>Session</th>
+                <th>Date</th>
+                <th>Attachment Style</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td>01</td>
+                <td>Jumat 11 Movember 2025</td>
+                <td>Anxious</td>
+                <td>mata</td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

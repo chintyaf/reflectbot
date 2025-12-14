@@ -1,0 +1,64 @@
+{% extends "layouts/app.html" %} {% block content %}
+<div></div>
+<div class="container">
+    <div class="chat-section">
+        <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
+            <div class="chat-text chat-bot">
+                <img
+                    height="40"
+                    src="{{ url_for('static', filename='img/bot_profile.png') }}"
+                    alt="Logo"
+                />
+                <span class="chat-bubble">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Pariatur optio sequi eligendi odit ipsam eius itaque, eum
+                    dicta dolor? Vel, ducimus veritatis. Porro blanditiis quia
+                    excepturi iusto facilis fugit dignissimos.
+                </span>
+            </div>
+
+            <div class="chat-text chat-user">
+                <span class="chat-bubble">
+                    Lorem ipsum dolor sit amet con
+                </span>
+                <img
+                    height="40"
+                    src="{{ url_for('static', filename='img/user_profile.png') }}"
+                    alt="Logo"
+                />
+            </div>
+        </div>
+
+        <div height: "400px"></div>
+    </div>
+
+    <!-- INPUT -->
+     </div>
+    <div class="input-chat-section fixed-bottom">
+        <div class="chat-input">
+            <p
+                id="chatInput"
+                class="input-user"
+                contenteditable="true"
+                data-placeholder="Message to ReflectBot..."
+            ></p>
+
+            <div class="d-flex">
+                <button id="sendBtn" onclick="sendMessage()">
+                    Send
+                    <img
+                        src="{{ url_for('static', filename='img/icon/send.svg') }}"
+                        alt="Send"
+                        width="15"
+                    />
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const USER_IMG = "{{ url_for('static', filename='img/user_profile.png') }}";
+    const BOT_IMG = "{{ url_for('static', filename='img/bot_profile.png') }}";
+</script>
+{% endblock %}
