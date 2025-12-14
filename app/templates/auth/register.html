@@ -116,7 +116,7 @@
                 {% endfor %} {% endif %} {% endwith %}
 
                 <div class="">
-                    <a href="" class="auth-link">Already have an account?</a>
+                    <a href="{{ url_for('auth.login') }}" class="auth-link">Already have an account?</a>
                 </div>
             </div>
         </div>

@@ -20,13 +20,13 @@
     <body id="main-app">
         <div class="d-flex">
             {% include "layouts/sidebar.html" %}
-            
-            <div class="w-100" style="background-color: #F8FAFC">
+
+            <div class="w-100" style="background-color: #f8fafc">
                 <nav>
+                    <a href="{{ url_for('auth.logout')  }}"> Logout</a>
                     <h1 class="header">ReflectBot</h1>
                 </nav>
                 {% block content %} {% endblock %}
-                
             </div>
         </div>
         <!-- <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo"> -->

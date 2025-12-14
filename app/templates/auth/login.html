@@ -26,7 +26,7 @@
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type=" password" id="password" name="password" placeholder="******" class="form-control">
+                    <input type="password" id="password" name="password" placeholder="******" class="form-control">
                     <div class="mt-3 d-flex justify-content-between align-item-center">
                         <div class="d-flex align-item-center gap-2">
                             <input type="checkbox" id="remember_password" style="min-width: 20px;">
@@ -42,7 +42,7 @@
             </form>
 
             <div class="">
-                <a href="" class="auth-link">No account yet? Sign Up</a>
+                <a href="{{ url_for('auth.register') }}" class="auth-link">No account yet? Sign Up</a>
             </div>
         </div>
         <div class="col-6">
