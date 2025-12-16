@@ -1,8 +1,56 @@
-{% extends "layouts/app.html" %} {% block content %}
-<div></div>
-    <div class="chat-section">
-        <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
-            <div class="chat-text chat-bot">
+{% extends "layouts/app.html" %}
+{% block content %}
+
+<div class="chat-section">
+
+    <!-- CHAT MESSAGES -->
+    <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
+        <!-- Messages will be loaded here via AJAX -->
+    </div>
+
+    <!-- SPACER (biar tidak ketutup input) -->
+    <div style="height: 120px;"></div>
+</div>
+
+<!-- INPUT CHAT -->
+<div class="input-chat-section fixed-bottom">
+    <div class="chat-input">
+        <p
+            id="chatInput"
+            class="input-user"
+            contenteditable="true"
+            data-placeholder="Message to ReflectBot..."
+        ></p>
+
+        <div class="d-flex">
+            <button
+                id="sendBtn"
+                type="button"
+                onclick="sendMessage()"
+            >
+                Send
+                <img
+                    src="{{ url_for('static', filename='img/icon/send.svg') }}"
+                    alt="Send"
+                    width="15"
+                />
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- GLOBAL VARIABLES -->
+<script>
+    const SESSION_ID = "{{ session.id }}";
+    const USER_IMG = "{{ url_for('static', filename='img/user_profile.png') }}";
+    const BOT_IMG = "{{ url_for('static', filename='img/bot_profile.png') }}";
+    const CURRENT_USER = "{{ current_user.name }}";
+</script>
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+{% endblock %}
+            <!-- <div class="chat-text chat-bot">
                 <img
                     height="40"
                     src="{{ url_for('static', filename='img/bot_profile.png') }}"
@@ -25,38 +73,4 @@
                     src="{{ url_for('static', filename='img/user_profile.png') }}"
                     alt="Logo"
                 />
-            </div>
-        </div>
-
-        <div height: "400px"></div>
-    </div>
-
-    <!-- INPUT -->
-     </div>
-    <div class="input-chat-section fixed-bottom">
-        <div class="chat-input">
-            <p
-                id="chatInput"
-                class="input-user"
-                contenteditable="true"
-                data-placeholder="Message to ReflectBot..."
-            ></p>
-
-            <div class="d-flex">
-                <button id="sendBtn" onclick="sendMessage()">
-                    Send
-                    <img
-                        src="{{ url_for('static', filename='img/icon/send.svg') }}"
-                        alt="Send"
-                        width="15"
-                    />
-                </button>
-            </div>
-        </div>
-    </div>
-
-<script>
-    const USER_IMG = "{{ url_for('static', filename='img/user_profile.png') }}";
-    const BOT_IMG = "{{ url_for('static', filename='img/bot_profile.png') }}";
-</script>
-{% endblock %}
+            </div> -->
