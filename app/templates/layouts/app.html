@@ -26,7 +26,9 @@
                     <a href="{{ url_for('auth.logout')  }}"> Logout</a>
                     <h1 class="header">ReflectBot</h1>
                 </nav>
-                {% block content %} {% endblock %}
+                <div class="container">
+                    {% block content %} {% endblock %}
+                </div>
             </div>
         </div>
         <!-- <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo"> -->

@@ -1,6 +1,5 @@
 {% extends "layouts/app.html" %} {% block content %}
 <div></div>
-<div class="container">
     <div class="chat-section">
         <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
             <div class="chat-text chat-bot">
@@ -55,7 +54,6 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
     const USER_IMG = "{{ url_for('static', filename='img/user_profile.png') }}";

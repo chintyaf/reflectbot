@@ -13,11 +13,15 @@ def create_app():
 
     from .views import views
     from .auth import auth
+    from .chat_session import chat_session
+    from .chat_message import chat_message
 
     app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='')
+    app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(chat_session, url_prefix='/chat')
+    app.register_blueprint(chat_message, url_prefix='/chat')
 
-    from .models import User, JournalChats
+    from .models import User, ChatMessages, ChatSessions
 
     create_database(app)
 
