@@ -1,6 +1,4 @@
 {% extends "layouts/app.html" %} {% block content %}
-<div></div>
-<div class="container">
     <div class="chat-section">
         <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
             <div class="chat-text chat-bot">
@@ -33,11 +31,12 @@
     </div>
 
     <!-- INPUT -->
-     </div>
+    </div>
+
     <div class="input-chat-section fixed-bottom">
         <div class="chat-input">
             <p
-                id="chatInput"
+                id="content"
                 class="input-user"
                 contenteditable="true"
                 data-placeholder="Message to ReflectBot..."
@@ -55,10 +54,12 @@
             </div>
         </div>
     </div>
-</div>
 
 <script>
+    const SESSION_ID = "{{ session.id }}";
     const USER_IMG = "{{ url_for('static', filename='img/user_profile.png') }}";
     const BOT_IMG = "{{ url_for('static', filename='img/bot_profile.png') }}";
+
+    
 </script>
 {% endblock %}
