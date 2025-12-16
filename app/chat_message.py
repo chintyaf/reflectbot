@@ -24,6 +24,7 @@ def read_messages(session_id):
 
     return jsonify(messages_data)
 
+# Send Message for both User and Bot
 @chat_message.route('/<int:session_id>/send', methods=['POST'])
 @login_required
 def send_message(session_id):
@@ -41,12 +42,29 @@ def send_message(session_id):
         content=content
     )
 
+    bot_reply = generate_reply(content)
+
+    bot_msg = ChatMessages(
+        session_id=session_id,
+        sender="bot",
+        content=bot_reply
+    )
+
     db.session.add(msg)
+    db.session.add(bot_msg)
     db.session.commit()
 
     return jsonify({
-        "id": msg.id,
-        "sender": msg.sender,
-        "content": msg.content,
-        "created_at": msg.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        "user": content,
+        "bot": bot_reply
     })
+
+def generate_reply(text):
+    text = text.lower()
+
+    if "hello" in text:
+        return "Hello! How can I help you?"
+    elif "bye" in text:
+        return "Goodbye! 👋"
+    else:
+        return "I understand. Tell me more."

@@ -15,30 +15,7 @@ function loadMessages() {
             chatMessages.innerHTML = "";
 
             messages.forEach((msg) => {
-                const div = document.createElement("div");
-
-                div.className =
-                    msg.sender === "user"
-                        ? "chat-text chat-user"
-                        : "chat-text chat-bot";
-
-                if (msg.sender === "user") {
-                    div.innerHTML = `
-                    <span class="chat-bubble">
-                        ${msg.content.replace(/\n/g, "<br>")}
-                    </span>
-                    <img height="40" src="${USER_IMG}" alt="user_profile.png" />
-                    `;
-                } else {
-                    div.innerHTML = `
-                    <img height="40" src="${BOT_IMG}" alt="user_profile.png" />
-                    <span class="chat-bubble">
-                        ${msg.content.replace(/\n/g, "<br>")}
-                    </span>
-
-                `;
-                }
-                chatMessages.appendChild(div);
+                appendMessage(msg.sender, msg.content);
             });
 
             scrollToBottom();
@@ -47,28 +24,11 @@ function loadMessages() {
 }
 
 function sendMessage() {
-    // const message = chatInput.innerText.trim();
-    // if (!message) return;
-
-    // console.log(message);
-
-    // const userMessage = document.createElement("div");
-    // userMessage.className = "chat-text chat-user";
-    // userMessage.innerHTML = `
-    //     <span class="chat-bubble">
-    //         ${message.replace(/\n/g, "<br>")}
-    //     </span>
-    //     <img height="40" src="${USER_IMG}" alt="user_profile.png" />
-    // `;
-
-    // chatMessages.appendChild(userMessage);
-
-    // // Clear contenteditable <p>
-    // chatInput.textContent = "";
-    // scrollToBottom();
-
     const message = chatInput.innerText.trim();
     if (!message) return;
+
+    // Send message langsung ke frontend
+    appendMessage("user", message);
 
     console.log("send");
     fetch(`/chat/${SESSION_ID}/send`, {
@@ -91,8 +51,6 @@ function sendMessage() {
             loadMessages();
             chatInput.textContent = "";
             scrollToBottom();
-
-            // kalau mau update timestamp / id, bisa di sini
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -127,4 +85,33 @@ function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight + 200;
 }
 
+function appendMessage(sender, text) {
+    const div = document.createElement("div");
+
+    div.className =
+        sender === "user"
+            ? "chat-text chat-user"
+            : "chat-text chat-bot";
+
+    if (sender === "user") {
+        div.innerHTML = `
+        <span class="chat-bubble">
+            ${text.replace(/\n/g, "<br>")}
+        </span>
+        <img height="40" src="${USER_IMG}" alt="user_profile.png" />
+        `;
+    } else {
+        div.innerHTML = `
+        <img height="40" src="${BOT_IMG}" alt="user_profile.png" />
+        <span class="chat-bubble">
+            ${text.replace(/\n/g, "<br>")}
+        </span>
+
+    `;
+    }
+    chatMessages.appendChild(div);
+}
+
 document.addEventListener("DOMContentLoaded", loadMessages);
+
+
