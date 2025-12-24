@@ -6,16 +6,16 @@ from . import db
 
 
 
-@chat_session.route('/create')
+@chat_session.route('/')
 @login_required
 def create():
-    new_chat = ChatSessions(
-        user_id = current_user.id,
-    )
+    new_chat = ChatSessions(user_id=current_user.id)
     db.session.add(new_chat)
     db.session.commit()
 
-    return render_template("chat/chatbot.html", user=current_user)
+    return redirect(
+        url_for('chat_session.detail', session_id=new_chat.id)
+    )
 
 @chat_session.route('/<int:session_id>')
 @login_required

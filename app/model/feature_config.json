@@ -1,0 +1,28 @@
+{
+  "bert_dim": 768,
+  "phrase_dim": 100,
+  "emotion_cols": [
+    "neutral_ratio_x",
+    "happy_ratio_x",
+    "sad_ratio_x",
+    "contempt_ratio_x",
+    "anger_ratio_x",
+    "disgust_ratio_x",
+    "surprised_ratio_x",
+    "fear_ratio_x",
+    "neutral_ratio_y",
+    "happy_ratio_y",
+    "sad_ratio_y",
+    "contempt_ratio_y",
+    "anger_ratio_y",
+    "disgust_ratio_y",
+    "surprised_ratio_y",
+    "fear_ratio_y"
+  ],
+  "text_stat_cols": [
+    "word_count",
+    "num_stimuli"
+  ],
+  "total_features": 886,
+  "best_model": "Gradient Boosting"
+}
