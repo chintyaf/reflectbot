@@ -26,3 +26,24 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, default=func.now())
     journal_chat = db.relationship('ChatSessions')
 
+
+class SessionAnalysis(db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.Integer, db.ForeignKey('chat_sessions.id'), unique=True)
+    
+    # Main Prediction
+    attachment_style = db.Column(db.String(50))  # secure, anxious, avoidant
+    confidence = db.Column(db.Float)
+    probabilities = db.Column(db.Text)  
+    
+    phrase_analysis = db.Column(db.Text)  
+    emotion_analysis = db.Column(db.Text) 
+    bert_features = db.Column(db.Text)  
+    text_statistics = db.Column(db.Text) 
+    timeline_data = db.Column(db.Text)  
+    ai_insights = db.Column(db.Text)  
+    rule_scores = db.Column(db.Text) 
+    
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())

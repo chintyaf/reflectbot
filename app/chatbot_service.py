@@ -115,31 +115,70 @@ class ChatbotService:
         return embedding
     
     def predict(self, conversation_text):
+        """
+        Predict attachment style dengan DETAILED OUTPUT
+        Returns semua info model: BERT, emotion, phrase scores, dll
+        """
         # Preprocess
         clean_text = self.preprocess_text(conversation_text)
+        
+        # Text statistics
+        word_count = len(clean_text.split())
+        sentence_count = conversation_text.count('.') + conversation_text.count('!') + conversation_text.count('?')
         
         # 1. BERT embedding
         bert_emb = self.encode_text_bert(clean_text)
         bert_emb_scaled = self.scaler_bert.transform([bert_emb])[0]
         feature_list = [bert_emb_scaled]
         
-        # 2. Phrase features
+        # BERT summary untuk output
+        bert_summary = {
+            "embedding_dim": len(bert_emb),
+            "embedding_mean": float(np.mean(bert_emb)),
+            "embedding_std": float(np.std(bert_emb)),
+            "embedding_max": float(np.max(bert_emb)),
+            "embedding_min": float(np.min(bert_emb))
+        }
+        
+        # 2. Phrase features WITH SCORES
         phrases = self.extract_phrases(clean_text)
+        phrase_scores = {}
+        
         if self.phrase_tfidf and phrases:
             phrase_text = ' '.join(phrases)
             phrase_features = self.phrase_tfidf.transform([phrase_text]).toarray()[0]
             feature_list.append(phrase_features)
+            
+            # Get TF-IDF scores untuk setiap phrase
+            feature_names = self.phrase_tfidf.get_feature_names_out()
+            for phrase in phrases:
+                phrase_words = phrase.split()
+                # Cari skor dari vocab
+                matching_scores = []
+                for word in phrase_words:
+                    if word in feature_names:
+                        idx = list(feature_names).index(word)
+                        matching_scores.append(phrase_features[idx])
+                
+                if matching_scores:
+                    phrase_scores[phrase] = float(np.mean(matching_scores))
         
-        # 3. Emotion features (zeros for now)
+        # 3. Emotion features (jika ada model emotion)
+        emotion_scores = {}
         if self.feature_config.get('emotion_cols'):
+            # Ini placeholder - kalau ada model emotion beneran, extract di sini
             emotion_zeros = np.zeros(len(self.feature_config['emotion_cols']))
             if self.scaler_emotion:
                 emotion_zeros = self.scaler_emotion.transform([emotion_zeros])[0]
             feature_list.append(emotion_zeros)
+            
+            # Output emotion scores (untuk ditampilkan)
+            for i, emotion_col in enumerate(self.feature_config['emotion_cols']):
+                emotion_scores[emotion_col] = float(emotion_zeros[i])
         
         # 4. Text stats
         if self.feature_config.get('text_stat_cols'):
-            text_stats = [len(clean_text.split()), 1]
+            text_stats = [word_count, sentence_count]
             if self.scaler_text:
                 text_stats = self.scaler_text.transform([text_stats])[0]
             feature_list.append(text_stats)
@@ -152,10 +191,31 @@ class ChatbotService:
         probabilities = self.model.predict_proba(X)[0]
         proba_dict = dict(zip(self.model.classes_, probabilities))
         
+        # ENHANCED RETURN dengan semua detail model
         return {
+            # Main prediction
             "prediction": prediction,
             "confidence": float(max(probabilities)),
             "probabilities": {k: float(v) for k, v in proba_dict.items()},
-            "key_phrases": phrases[:15],
-            "clean_text": clean_text
+            
+            # Phrase analysis
+            "key_phrases": phrases[:20],
+            "phrase_scores": phrase_scores,  
+            
+            # Emotion analysis (jika ada)
+            "emotion_scores": emotion_scores,  
+            
+            # BERT features summary
+            "bert_summary": bert_summary, 
+            
+            # Text stats
+            "text_stats": {
+                "word_count": word_count,
+                "sentence_count": sentence_count,
+                "clean_text_length": len(clean_text)
+            },
+            
+            # Original text
+            "clean_text": clean_text,
+            "original_text": conversation_text
         }
