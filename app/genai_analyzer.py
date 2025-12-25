@@ -1,7 +1,9 @@
 import os
 from typing import List, Dict
 from google import genai
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class GeminiAnalyzer:
 

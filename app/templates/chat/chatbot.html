@@ -6,7 +6,6 @@
     <button id="analyzeBtn" onclick="analyzeConversation()">
         Analisis Percakapan
     </button>
-    <div id="analysisResult" style="display:none;"></div>
 
     <!-- CHAT MESSAGES -->
     <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
@@ -20,45 +19,42 @@
 <!-- INPUT CHAT -->
 <div class="input-chat-section fixed-bottom">
     <div class="chat-input">
-        <p
-            id="chatInput"
-            class="input-user"
-            contenteditable="true"
-            data-placeholder="Message to ReflectBot..."
-        ></p>
+        <p id="chatInput" class="input-user" contenteditable="true" data-placeholder="Message to ReflectBot..."></p>
 
         <div class="d-flex">
-            <button
-                id="sendBtn"
-                type="button"
-                onclick="sendMessage()"
-            >
+            <button id="sendBtn" type="button" onclick="sendMessage()">
                 Send
-                <img
-                    src="{{ url_for('static', filename='img/icon/send.svg') }}"
-                    alt="Send"
-                    width="15"
-                />
+                <img src="{{ url_for('static', filename = 'img/icon/send.svg') }}" alt="Send" width="15" />
             </button>
+        </div>
+    </div>
+</div>
+<div id="analysisModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close-modal" onclick="closeAnalysisModal()">&times;</span>
+        </div>
+        <div id="analysisContent">
+            <p>Loading...</p>
         </div>
     </div>
 </div>
 
 <!-- GLOBAL VARIABLES -->
 <script>
-    const SESSION_ID = "{{ session.id }}";
-    const USER_IMG = "{{ url_for('static', filename='img/user_profile.png') }}";
-    const BOT_IMG = "{{ url_for('static', filename='img/bot_profile.png') }}";
-    const CURRENT_USER = "{{ current_user.name }}";
+    const SESSION_ID = "{{ session . id }}";
+    const USER_IMG = "{{ url_for('static', filename = 'img/user_profile.png') }}";
+    const BOT_IMG = "{{ url_for('static', filename = 'img/bot_profile.png') }}";
+    const CURRENT_USER = "{{ current_user . name }}";
 </script>
 
-<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/chat.js') }}"></script>
 
 {% endblock %}
-            <!-- <div class="chat-text chat-bot">
+<!-- <div class="chat-text chat-bot">
                 <img
                     height="40"
-                    src="{{ url_for('static', filename='img/bot_profile.png') }}"
+                    src="{{ url_for('static', filename = 'img/bot_profile.png') }}"
                     alt="Logo"
                 />
                 <span class="chat-bubble">
@@ -75,7 +71,7 @@
                 </span>
                 <img
                     height="40"
-                    src="{{ url_for('static', filename='img/user_profile.png') }}"
+                    src="{{ url_for('static', filename = 'img/user_profile.png') }}"
                     alt="Logo"
                 />
             </div> -->
