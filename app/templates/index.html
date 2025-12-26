@@ -32,7 +32,10 @@
                         Continue
                     </a>
                     {% else %}
-                    <!-- optional: something else -->
+                    <a href="{{ url_for('chat_session.detail', session_id=s.id) }}"
+                        class="btn btn-success">
+                            View Result
+                        </a>
                     {% endif %}
                     <a href="{{ url_for('chat_session.delete', session_id = s . id) }}" class="btn btn-danger">
                         Delete
