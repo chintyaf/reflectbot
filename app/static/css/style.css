@@ -354,6 +354,14 @@ CHAT
     padding: 20px;
 }
 
+#analyzeBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#analyzeBtn.ready {
+    animation: pulse 2s infinite;
+}
+        
 .section {
     background: var(--card);
     border-radius: var(--radius);

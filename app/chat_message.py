@@ -11,8 +11,15 @@ import json
 chat_message = Blueprint('chat_message', __name__)
 
 chatbot_service = ChatbotService(model_path="app/model/")
-conversation_engine = ConversationEngine()
+conversation_engines = {}
 gemini_analyzer = GeminiAnalyzer()
+
+
+def get_conversation_engine(session_id):
+    """Get or create conversation engine for session"""
+    if session_id not in conversation_engines:
+        conversation_engines[session_id] = ConversationEngine()
+    return conversation_engines[session_id]
 
 @chat_message.route('/<int:session_id>/read')
 @login_required
@@ -53,7 +60,8 @@ def send_message(session_id):
     
     db.session.add(user_msg)
 
-    bot_reply = conversation_engine.respond(content)
+    conv_engine = get_conversation_engine(session_id)
+    bot_reply = conv_engine.respond(content)
 
     # Save bot message
     bot_msg = ChatMessages(
@@ -84,7 +92,6 @@ def analyze_conversation(session_id):
     
     if existing_analysis:
         # Return cached analysis!
-        print(f"[INFO] Returning cached analysis for session {session_id}")
         return jsonify({
             "cached": True,
             "analyzed_at": existing_analysis.created_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -102,8 +109,6 @@ def analyze_conversation(session_id):
             "rule_scores": json.loads(existing_analysis.rule_scores)
         })
 
-    # ===== IF NOT ANALYZED YET, RUN ANALYSIS =====
-    print(f"[INFO] Running fresh analysis for session {session_id}")
 
     # Get all user messages
     messages = ChatMessages.query.filter_by(
@@ -272,13 +277,32 @@ def analyze_conversation(session_id):
     )
     
     db.session.add(new_analysis)
+    
+    summary_message = f""" **Analisis Percakapan Selesai!**
+
+        Attachment Style Anda: **{bert_result["prediction"].upper()}** ({round(bert_result["confidence"] * 100, 1)}% confidence)
+
+        ---
+
+        {gemini_summary}
+
+        ---
+
+         *Lihat detail lengkap dengan klik tombol "Analisis Percakapan" di atas.*"""
+
+    summary_bot_msg = ChatMessages(
+        session_id=session_id,
+        sender="bot",
+        content=summary_message
+    )
+    db.session.add(summary_bot_msg)
+
     session.status = 'analyzed'
     db.session.commit()
     
-    print(f"[SUCCESS] Analysis saved for session {session_id}")
-
     return jsonify({
         "cached": False,
+        "summary_sent_to_chat": True,
         "attachment_style": {
             "prediction": bert_result["prediction"],
             "confidence": round(bert_result["confidence"] * 100, 1),

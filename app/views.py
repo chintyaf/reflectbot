@@ -13,7 +13,6 @@ def home():
 
     return render_template(
         "index.html",
-        name="Chintya",
         user=current_user,
         sessions=sessions
     )

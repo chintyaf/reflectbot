@@ -1,6 +1,10 @@
 const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
 const chatMessages = document.getElementById("chatMessages");
+const analyzeBtn = document.getElementById("analyzeBtn");
+
+let messageCount = 0;
+
 
 chatInput.addEventListener("input", function () {
     this.style.height = "auto";
@@ -8,16 +12,16 @@ chatInput.addEventListener("input", function () {
 });
 
 function loadMessages() {
-    console.log("load messages");
     fetch(`/chat/${SESSION_ID}/read`)
         .then((res) => res.json())
         .then((messages) => {
             chatMessages.innerHTML = "";
+            messageCount = messages.filter(m => m.sender === "user").length;
 
             messages.forEach((msg) => {
                 appendMessage(msg.sender, msg.content);
             });
-
+            updateAnalyzeButton();
             scrollToBottom();
         })
         .catch((err) => console.error(err));
@@ -27,10 +31,9 @@ function sendMessage() {
     const message = chatInput.innerText.trim();
     if (!message) return;
 
-    // Send message langsung ke frontend
-    appendMessage("user", message);
+    chatInput.disabled = true;
+    sendBtn.disabled = true;
 
-    console.log("send");
     fetch(`/chat/${SESSION_ID}/send`, {
         method: "POST",
         headers: {
@@ -47,31 +50,41 @@ function sendMessage() {
             return response.json();
         })
         .then((data) => {
-            console.log("Saved message:", data);
-            loadMessages();
             chatInput.textContent = "";
+            
+            appendMessage("user", data.user);
+            appendMessage("bot", data.bot);
+            
+            messageCount += 1;
+            updateAnalyzeButton();
+            
             scrollToBottom();
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            chatInput.focus();
         })
         .catch((error) => {
             console.error("Error:", error);
             alert("Message failed to send");
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
         });
 }
 
-function receiveMessage(bot_message) {
-    const botMessage = document.createElement("div");
-    botMessage.className = "chat-text chat-user";
-    botMessage.innerHTML = `
-        <img height="40" src="${USER_IMG}" alt="user_profile.png" />
-        <span class="chat-bubble">
-                ${bot_message}
-        </span>
-    `;
 
-    chatMessages.appendChild(botMessage);
-    chatInput.value = "";
 
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+function updateAnalyzeButton() {
+    const count = Number(messageCount) || 0;
+
+    if (messageCount >= 5) {
+        analyzeBtn.disabled = false;
+        analyzeBtn.classList.add("ready");
+        analyzeBtn.innerHTML = `Analisis Percakapan <span class="badge">${messageCount} pesan</span>`;
+    } else {
+        analyzeBtn.disabled = true;
+        analyzeBtn.classList.remove("ready");
+        analyzeBtn.innerHTML = `Analisis (${messageCount}/san)`;
+    }
 }
 
 chatInput.addEventListener("keydown", function (e) {
@@ -114,56 +127,61 @@ function appendMessage(sender, text) {
 
 
 
-function analyzeConversation() {
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    analyzeBtn.disabled = true;
-    analyzeBtn.textContent = "Menganalisis...";
+function openAnalysisModal() {
+    const modal = document.getElementById("analysisModal");
+    const modalContent = document.getElementById("analysisContent");
+    
+    modal.style.display = "block";
+    modalContent.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Menganalisis percakapan Anda...</p>
+            <small>Memproses dengan IndoBERT + AI</small>
+        </div>
+    `;
+    
+    // Fetch analysis
     fetch(`/chat/${SESSION_ID}/analyze`, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-})
-.then(async (res) => {
-    const text = await res.text();
-    console.log("RAW RESPONSE:", text);
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+        .then((res) => {
+            if (!res.ok) throw new Error("Analysis failed");
+            return res.json();
+        })
+        .then((data) => {
+            displayAnalysisResults(data);
+            
+            isAnalyzed = true;
+            lockChatInput();
 
-    if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${text}`);
-    }
-
-    return JSON.parse(text);
-})
-.then((data) => {
-    displayAnalysisResult(data);
-})
-.catch((err) => {
-    console.error("FETCH ERROR:", err);
-    alert("Gagal menganalisis. Cek console.");
-})
-.finally(() => {
-    analyzeBtn.disabled = false;
-    analyzeBtn.textContent = "Analisis Percakapan";
-});
-}
-function openModal() {
-    const modal = document.getElementById("analysisModal");
-    if (!modal) {
-        console.warn("Modal not found");
-        return;
-    }
-    modal.style.display = "flex";
+            // If summary was sent to chat, reload messages
+            if (data.summary_sent_to_chat) {
+                setTimeout(() => {
+                    loadMessages();
+                }, 500);
+            }
+        })
+        .catch((err) => {
+            modalContent.innerHTML = `
+                <div class="error-state">
+                    <p style="color: red;"> Gagal menganalisis: ${err.message}</p>
+                    <button onclick="closeAnalysisModal()" class="btn-close">Tutup</button>
+                </div>
+            `;
+        });
 }
 
-function closeModal() {
-    const modal = document.getElementById("analysisModal");
-    if (modal) modal.style.display = "none";
+function closeAnalysisModal() {
+    document.getElementById("analysisModal").style.display = "none";
 }
 
-function displayAnalysisResult(data) {
+function displayAnalysisResults(data) {
     const modalContent = document.getElementById("analysisContent");
 
-     const style = data.attachment_style.prediction;
+    const style = data.attachment_style.prediction;
     const confidence = data.attachment_style.confidence;
     
   
@@ -370,8 +388,19 @@ function displayAnalysisResult(data) {
         </div>
     `;
 
-    openModal(); 
+
 }
+
+function lockChatInput() {
+    chatInput.disabled = true;
+    sendBtn.disabled = true;
+
+    chatInput.placeholder = "Percakapan sudah dianalisis";
+    sendBtn.innerText = "Analisis Selesai";
+
+    sendBtn.classList.add("disabled");
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     loadMessages();

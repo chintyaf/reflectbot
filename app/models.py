@@ -9,7 +9,7 @@ class ChatSessions(db.Model):
     ended_at = db.Column(db.DateTime(timezone=True), nullable=True)
     status = db.Column(db.String(50), default='active')
     chat_messages = db.relationship('ChatMessages')
-
+    analysis = db.relationship('SessionAnalysis', backref='session', uselist=False, cascade='all, delete-orphan')
 
 class ChatMessages(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,8 +27,7 @@ class User(db.Model, UserMixin):
     journal_chat = db.relationship('ChatSessions')
 
 
-class SessionAnalysis(db.Model):
-    
+class SessionAnalysis(db.Model):   
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('chat_sessions.id'), unique=True)
     
