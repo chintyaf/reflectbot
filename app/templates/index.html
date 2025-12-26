@@ -1,11 +1,9 @@
 {% extends "layouts/app.html" %} {% block content %}
 <div class="d-flex flex-column" style="gap: 30px">
-    <h3 class="fw-bold fs-5">Hi {{ name }}, good to see you again.</h3>
+    <h3 class="fw-bold fs-5">Hi {{ user . name }}, good to see you again.</h3>
 
     <div class="">
-        <a href="/chat" class="primary-btn" style="padding: 16px 30px"
-            >Start New Assessmen</a
-        >
+        <a href="/chat" class="primary-btn" style="padding: 16px 30px">Start New Assessmen</a>
     </div>
 
     <div>
@@ -18,19 +16,25 @@
             </tr>
             {% for s in sessions %}
             <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ s.started_at.strftime('%A %d %B %Y') }}</td>
-                <td>{{ s.attachment_style }}</td>
+                <td>{{ loop . index }}</td>
+                <td>{{ s . started_at . strftime('%A %d %B %Y') }}</td>
+                <td>
+                    {% if s.analysis %}
+                    {{ s . analysis . attachment_style }}
+                    {% else %}
+                    <span class="text-muted">Belum dianalisis</span>
+                    {% endif %}
+                </td>
+
                 <td>
                     {% if s.status == 'active' %}
-                        <a href="{{ url_for('chat_session.detail', session_id=s.id) }}"
-                        class="btn btn-primary">
-                            Continue
-                        </a>
+                    <a href="{{ url_for('chat_session.detail', session_id = s . id) }}" class="btn btn-primary">
+                        Continue
+                    </a>
                     {% else %}
-                        <!-- optional: something else -->
+                    <!-- optional: something else -->
                     {% endif %}
-                    <a href="{{ url_for('chat_session.delete', session_id=s.id) }}" class="btn btn-danger">
+                    <a href="{{ url_for('chat_session.delete', session_id = s . id) }}" class="btn btn-danger">
                         Delete
                     </a>
                 </td>
