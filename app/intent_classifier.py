@@ -11,7 +11,7 @@ class Intent:
     name: str
     patterns: List[str]
     responses: List[str]
-    follow_ups: List[str]
+    follow_ups: List[str] 
     required_turns: int = 1
 
 
