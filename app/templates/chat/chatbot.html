@@ -1,0 +1,77 @@
+{% extends "layouts/app.html" %}
+{% block content %}
+
+<div class="chat-section">
+
+    <button id="analyzeBtn" class="primary-btn" onclick="openAnalysisModal()">
+        Analisis Percakapan
+    </button>
+
+    <!-- CHAT MESSAGES -->
+    <div class="d-flex flex-column" style="gap: 30px" id="chatMessages">
+        <!-- Messages will be loaded here via AJAX -->
+    </div>
+
+    <!-- SPACER (biar tidak ketutup input) -->
+    <div style="height: 120px;"></div>
+</div>
+
+<!-- INPUT CHAT -->
+<div class="input-chat-section fixed-bottom">
+    <div class="chat-input">
+        <p id="chatInput" class="input-user" contenteditable="true" data-placeholder="Message to ReflectBot..."></p>
+
+        <div class="d-flex">
+            <button id="sendBtn" type="button" onclick="sendMessage()">
+                Send
+                <img src="{{ url_for('static', filename = 'img/icon/send.svg') }}" alt="Send" width="15" />
+            </button>
+        </div>
+    </div>
+</div>
+<div id="analysisModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close-modal" onclick="closeAnalysisModal()">&times;</span>
+        </div>
+        <div id="analysisContent">
+            <p>Loading...</p>
+        </div>
+    </div>
+</div>
+
+<!-- GLOBAL VARIABLES -->
+<script>
+    const SESSION_ID = "{{ session . id }}";
+    const USER_IMG = "{{ url_for('static', filename = 'img/user_profile.png') }}";
+    const BOT_IMG = "{{ url_for('static', filename = 'img/bot_profile.png') }}";
+    const CURRENT_USER = "{{ current_user . name }}";
+</script>
+
+<script src="{{ url_for('static', filename = 'js/chat.js') }}"></script>
+
+{% endblock %}
+<!-- <div class="chat-text chat-bot">
+                <img
+                    height="40"
+                    src="{{ url_for('static', filename = 'img/bot_profile.png') }}"
+                    alt="Logo"
+                />
+                <span class="chat-bubble">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Pariatur optio sequi eligendi odit ipsam eius itaque, eum
+                    dicta dolor? Vel, ducimus veritatis. Porro blanditiis quia
+                    excepturi iusto facilis fugit dignissimos.
+                </span>
+            </div>
+
+            <div class="chat-text chat-user">
+                <span class="chat-bubble">
+                    Lorem ipsum dolor sit amet con
+                </span>
+                <img
+                    height="40"
+                    src="{{ url_for('static', filename = 'img/user_profile.png') }}"
+                    alt="Logo"
+                />
+            </div> -->

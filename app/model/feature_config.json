@@ -1,0 +1,10 @@
+{
+  "bert_dim": 768,
+  "phrase_dim": 100,
+  "text_stat_cols": [
+    "word_count",
+    "sentence_count"
+  ],
+  "total_features": 870,
+  "best_model": "Gradient Boosting with SMOTE"
+}

@@ -1,0 +1,33 @@
+venv/
+.env
+__pycache__/
+*.pyc
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+instance/
+reflectbot.db
+app.db
+
+# Model files (comment out if you want to include them)
+# app/model/*.pkl
+# app/model/*.joblib
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Test files
+test_*.py
+*_test.py
