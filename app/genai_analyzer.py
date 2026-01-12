@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GeminiAnalyzer:
-    def __init__(self, api_key: str = None, model: str = "gemini-1.0-pro"):
+    def __init__(self, api_key: str = None, model: str = "gemini-pro"):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         if not self.api_key:
             print("Warning: GEMINI_API_KEY tidak ditemukan. Menggunakan mock analysis.")
@@ -71,11 +71,15 @@ class GeminiAnalyzer:
 
         try:
             if self.api_key is None:
+                print("DEBUG: Using mock summary (no API key)")
                 return self._mock_summary(conversation_text, key_phrases, rule_scores)
                 
+            print("DEBUG: Calling Gemini API")
             response = self.model.generate_content(prompt)
+            print("DEBUG: Gemini response received")
             return response.text.strip()
         except Exception as e:
+            print(f"DEBUG: Gemini API failed: {e}, using mock")
             return self._mock_summary(conversation_text, key_phrases, rule_scores)
         
     def _mock_summary(self, conversation_text, key_phrases, rule_scores):

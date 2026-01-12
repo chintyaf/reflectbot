@@ -290,6 +290,8 @@ class ChatbotService:
         classes = [str(cls) for cls in self.model.classes_]
         proba_dict = dict(zip(classes, probabilities))
         
+        print(f"DEBUG: Raw prediction: {prediction}, Probabilities: {proba_dict}")
+        
         # Map prediction and probabilities to labels
         label_mapping = {'0': 'secure', '1': 'anxious', '2': 'avoidant'}
         prediction = label_mapping.get(prediction, prediction)
